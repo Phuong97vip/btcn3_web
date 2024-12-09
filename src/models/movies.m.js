@@ -137,6 +137,17 @@ module.exports = class Movies {
             }),
         }
     }
+    static async removeFav(id) {
+        try {
+            const query = `DELETE FROM fav WHERE movieid = $1;`;
+            const values = [id];
+            await db.execute(query, values);
+            return true;
+        } catch (error) {
+            console.error('Error in removeFav:', error);
+            return false;
+        }
+    }
     static async addFav(id) {
         try {
             await db.execute(`INSERT INTO fav(

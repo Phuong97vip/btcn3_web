@@ -90,5 +90,18 @@ module.exports = {
             next(error);
         };
     },
+    RemoveFav: async (req, res, next) => {
+        try {
+            const { id } = req.params;
+            const success = await Movies.removeFav(id);
+            if (success) {
+                res.status(200).json({ message: 'Phim đã được xóa khỏi danh sách yêu thích.' });
+            } else {
+                res.status(500).json({ message: 'Không thể xóa phim yêu thích.' });
+            }
+        } catch (error) {
+            next(error);
+        }
+    },
 
 }

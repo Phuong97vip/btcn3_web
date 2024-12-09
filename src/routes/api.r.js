@@ -25,4 +25,7 @@ router.get('/review/id=:id/per_page=:per_page/page=:page', ReviewController.GetR
 // Cast Routes
 router.get('/castMovies/id=:id', CastController.GetMovies);
 
+router.delete('/fav/:id', MovieController.RemoveFav);
+
+
 module.exports = router;
