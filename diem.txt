@@ -1,0 +1,17 @@
+Điểm: 1  Yêu cầu: Lên màn hình Home với dữ liệu.
+Điểm: 1  Yêu cầu: Template Engine tự xây dựng xử lý được điền dữ liệu từ biến.
+Điểm: 1  Yêu cầu: Template Engine tự xây dựng xử lý được biểu thức điều kiện.
+Điểm: 1  Yêu cầu: Template Engine tự xây dựng xử lý được biểu thức vòng lặp.
+Điểm: 0  Yêu cầu: Template Engine tự xây dựng xử lý được biểu thức con lồng nhau.
+Điểm: 0  Yêu cầu: Template Engine tự xây dựng xử lý được chia Template thành các phần nhỏ.
+Điểm: 0  Yêu cầu: Template Engine tự xây dựng xử lý được biểu thức tính toán trong điều kiện và điền giá trị biến (ví dụ: 22243{ a + b} hay 22243{if x ===1 }).
+Điểm: 1  Yêu cầu: trang quản lý danh sách movie yêu thích (fav).
+Điểm: 1  Yêu cầu: chức năng thêm mới phim.
+Điểm: 1  Yêu cầu: tìm kiếm movie, có phân trang (không bắt buộc AJAX).
+Điểm: 1  Yêu cầu: xem chi tiết movie với đủ thông tin.
+Điểm: 1  Yêu cầu: sử dụng AJAX phân trang các review của movie.
+Điểm: 1  Yêu cầu: xem chi tiết thông tin diễn viên có danh sách phim liên quan.
+Điểm: 1  Yêu cầu: tìm kiếm diễn viên hiển thị kết quả dạng bảng có phân trang.
+Điểm: 1  Yêu cầu: thêm review cho phim.
+
+=> 13/ 15đ
