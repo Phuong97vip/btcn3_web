@@ -14,7 +14,7 @@ console.log('DB_PASSWORD:', process.env.DB_PASSWORD);
 
 const config = {
     host: process.env.DB_HOST,          // e.g., 'localhost'
-    port: process.env.DB_PORT,          // e.g., 5432
+    port: process.env.DB_PORT,          // e.g., 5433
     database: process.env.DB_NAME,      // e.g., 'wad2231db'
     user: process.env.DB_USER,          // e.g., 'u21120534'
     password: process.env.DB_PASSWORD,  // e.g., 'r*N97D8J'
