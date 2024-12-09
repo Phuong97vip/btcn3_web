@@ -24,6 +24,8 @@ router.post('/movies/add', MovieController.AddMovie);
 
 // Review Routes
 router.get('/review/id=:id/per_page=:per_page/page=:page', ReviewController.GetReview);
+router.post('/review/add', ReviewController.AddReview); // Thêm route này
+
 
 // Cast Routes
 router.get('/castMovies/id=:id', CastController.GetMovies);

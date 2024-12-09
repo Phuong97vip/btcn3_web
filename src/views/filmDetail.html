@@ -174,11 +174,15 @@
               </li>
             </ul>
           </nav>
+           <!-- Add Review Button -->
+           <div class="card-footer text-end">
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addReviewModal">Add Review</button>
+          </div>
           <div class="card-body reviewList">
 
 
           </div>
-
+         
         </div>
       </div>
     </div>
@@ -205,6 +209,63 @@
     </div>
 
   </div>
+
+  <!-- Add Review Modal -->
+  <div class="modal fade" id="addReviewModal" tabindex="-1" aria-labelledby="addReviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="addReviewForm">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addReviewModalLabel">Add Your Review</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <!-- Username -->
+            <div class="mb-3">
+              <label for="username" class="form-label">Username <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+            <!-- Rate -->
+            <div class="mb-3">
+              <label for="rate" class="form-label">Rate (1-5) <span class="text-danger">*</span></label>
+              <select class="form-select" id="rate" name="rate" required>
+                <option value="">Select Rate</option>
+                <option value="1">1 - Very Bad</option>
+                <option value="2">2 - Bad</option>
+                <option value="3">3 - Okay</option>
+                <option value="4">4 - Good</option>
+                <option value="5">5 - Excellent</option>
+              </select>
+            </div>
+            <!-- Title -->
+            <div class="mb-3">
+              <label for="title" class="form-label">Review Title</label>
+              <input type="text" class="form-control" id="title" name="title">
+            </div>
+            <!-- Content -->
+            <div class="mb-3">
+              <label for="content" class="form-label">Review Content</label>
+              <textarea class="form-control" id="content" name="content" rows="3"></textarea>
+            </div>
+            <!-- Warnings Spoilers -->
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="checkbox" id="warningspoilers" name="warningspoilers">
+              <label class="form-check-label" for="warningspoilers">
+                Contains spoilers
+              </label>
+            </div>
+            <!-- Hidden Movie ID -->
+            <input type="hidden" id="movieid" name="movieid" value="21534{movies.id}">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Submit Review</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
 </body>
 
 <script>
@@ -275,23 +336,19 @@
     reviewList = await reviewList.json();
     for (const review of reviewList.reviews) {
       $('.reviewList').append(`
-      <div div class="card mb-3" >
+      <div class="card mb-3">
         <div class="row g-0">
-          <div class="col-12"
+          <div class="col-12">
             <div class="card-body">
               <h5 class="card-title">${review.username}</h5>
-              <p class="card-text display-3">${review.rate}
-              </p>
-              <p class="card-text">${review.title}
-              </p>
-              <p class="card-text">${review.content}
-              </p>
-              <p class="card-text"><small class="text-body-secondary">${review.date}</small>
-              </p>
+              <p class="card-text display-3">${review.rate}</p>
+              <p class="card-text">${review.title}</p>
+              <p class="card-text">${review.content}</p>
+              <p class="card-text"><small class="text-body-secondary">${review.date}</small></p>
             </div>
           </div>
         </div>
-      </div >
+      </div>
       `)
     }
     numberOfPage = Math.ceil(reviewList.total / reviewList.perPage)
@@ -300,7 +357,7 @@
   generateImageList();
   generateDirectorList();
   generateActorList();
-  generateReview(1);
+  generateReview();
 
   $('.pre').on('click', async () => {
     if (currentPage > 1) {
@@ -318,19 +375,71 @@
       await generateReview();
     }
   })
-  $('.favpage').on('click',() => {
+  $('.favpage').on('click', () => {
     window.location.href = `/fav/dark=${dark}`;
   })
 
-  $('.addButton').on('click',async () => {
+  $('.addButton').on('click', async () => {
     let check = await fetch(`../../../api/movies/fav/add/id=21534{movies.id}`)
     check = await check.json();
-    if(check) {
+    if (check) {
       alert("Thêm thành công!");
     } else {
       alert("Thêm không thành công!");
     }
   })
+
+  // Add Review Functionality
+  $(document).ready(function () {
+    $('#addReviewForm').on('submit', async function (e) {
+      e.preventDefault();
+
+      // Gather form data
+      const reviewData = {
+        movieid: $('#movieid').val(),
+        username: $('#username').val().trim(),
+        warningspoilers: $('#warningspoilers').is(':checked'),
+        rate: parseInt($('#rate').val()),
+        title: $('#title').val().trim(),
+        content: $('#content').val().trim()
+      };
+
+      // Basic validation
+      if (!reviewData.username || !reviewData.rate) {
+        alert('Please fill in the required fields.');
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/review/add', { // Adjust the endpoint as per your routing
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(reviewData)
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          alert(result.message || 'Review added successfully!');
+          // Close the modal
+          $('#addReviewModal').modal('hide');
+          // Reset the form
+          $('#addReviewForm')[0].reset();
+          // Refresh the review list
+          $('.reviewList').empty();
+          currentPage = 1;
+          generateReview();
+        } else {
+          alert(result.message || 'Failed to add the review.');
+        }
+      } catch (error) {
+        console.error('Error adding review:', error);
+        alert('An error occurred while adding your review. Please try again later.');
+      }
+    });
+  });
 </script>
 
 </html>
