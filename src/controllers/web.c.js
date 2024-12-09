@@ -9,7 +9,6 @@ module.exports = {
         try {
             const topRating = await Movies.getTopRating(5);
             if(req.params.dark != undefined) darkMode = (req.params.dark == 'true'? true: false)
-            console.log("Top rating movies",topRating.movies)
             res.render('index', { buttons: topRating.carControl, topRatingList: topRating.movies,darkMode: darkMode })
         } catch (error) {
             next(error);
