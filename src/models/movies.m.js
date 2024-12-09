@@ -89,17 +89,19 @@ module.exports = class Movies {
     static async getTopBoxOffice(perPage) {
         let result = await db.execute(`SELECT * FROM movies;`);
         result = result.sort((a, b) => {
-            const grossObj1 = Number(a.boxoffice.replace(/[^0-9.-]+/g, ""));
-            const grossObj2 = Number(b.boxoffice.replace(/[^0-9.-]+/g, ""));
-            return grossObj2 - grossObj1;
-        })
+            const grossStrA = a.boxoffice && a.boxoffice.cumulativeWorldwideGross ? a.boxoffice.cumulativeWorldwideGross : "";
+            const grossStrB = b.boxoffice && b.boxoffice.cumulativeWorldwideGross ? b.boxoffice.cumulativeWorldwideGross : "";
+    
+            const grossValA = Number(grossStrA.replace(/[^0-9.-]+/g, ""));
+            const grossValB = Number(grossStrB.replace(/[^0-9.-]+/g, ""));
+    
+            return grossValB - grossValA;
+        });
         result = result.slice(0, perPage);
         return {
             perPage: perPage,
-            movies: result.map((m) => {
-                return new Movies(m);
-            }),
-        }
+            movies: result.map((m) => new Movies(m)),
+        };
     }
     static async getPic(id) {
         let result = await db.execute(`SELECT distinct * FROM images where id = '${id}';`);
