@@ -1,5 +1,7 @@
 // src\models\movies.m.js
 const db = require('../database/db')
+const { v4: uuidv4 } = require('uuid'); // Import hàm tạo UUID
+
 
 module.exports = class Movies {
     constructor(obj) {
@@ -30,6 +32,71 @@ module.exports = class Movies {
             }),
         };
         return data;
+    }
+    static async addMovie(movieData) {
+        try {
+            const {
+                title,
+                originalTitle,
+                fullTitle,
+                year,
+                image,
+                releaseDate,
+                runtimeStr,
+                plot,
+                awards,
+                companies,
+                countries,
+                languages,
+                imDbRating,
+                boxOffice
+            } = movieData;
+
+            // Kiểm tra các trường bắt buộc
+            if (!title || !year || !image) {
+                throw new Error('Title, Year, and Image URL are required.');
+            }
+
+            // Tạo UUID cho phim mới
+            const newId = uuidv4();
+
+            const query = `
+                INSERT INTO movies (
+                    id, title, originaltitle, fulltitle, year, image, releasedate,
+                    runtimestr, plot, awards, companies, countries, languages,
+                    imdbrating, boxoffice
+                ) VALUES (
+                    $1, $2, $3, $4, $5, $6, $7,
+                    $8, $9, $10, $11, $12, $13,
+                    $14, $15
+                ) RETURNING *;
+            `;
+
+            const values = [
+                newId,
+                title,
+                originalTitle || null,
+                fullTitle || null,
+                year,
+                image,
+                releaseDate || null,
+                runtimeStr || null,
+                plot || null,
+                awards || null,
+                companies || null,
+                countries || null,
+                languages || null,
+                imDbRating || null,
+                boxOffice || null
+            ];
+
+            const result = await db.execute(query, values);
+            return result.length > 0;
+
+        } catch (error) {
+            console.error('Error in addMovie:', error);
+            return false;
+        }
     }
     static async detail(id) {
         const result = await db.execute(`SELECT * FROM movies WHERE id = '${id}';`);

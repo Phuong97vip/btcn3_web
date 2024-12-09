@@ -1,6 +1,8 @@
 // src\controllers\web.c.js
 const Movies = require('../models/movies.m')
 const Cast = require('../models/cast.m')
+const path = require('path'); // Thêm dòng này
+
 
 let darkMode = false;
 
@@ -60,5 +62,8 @@ module.exports = {
         } catch (error) {
             next(error);
         };
+    },
+    addMoviePage: (req, res) => {
+        res.sendFile(path.join(__dirname, '../views', 'addMovie.html'));
     },
 }

@@ -2,6 +2,58 @@
 const Movies = require('../models/movies.m')
 
 module.exports = {
+    AddMovie: async (req, res, next) => {
+        try {
+            const {
+                title,
+                originalTitle,
+                fullTitle,
+                year,
+                image,
+                releaseDate,
+                runtimeStr,
+                plot,
+                awards,
+                companies,
+                countries,
+                languages,
+                imDbRating,
+                boxOffice
+            } = req.body;
+
+            // Kiểm tra các trường bắt buộc
+            if (!title || !year || !image) {
+                return res.status(400).json({ message: 'Title, Year, and Image URL are required.' });
+            }
+
+            // Thêm phim mới vào cơ sở dữ liệu
+            const success = await Movies.addMovie({
+                title,
+                originalTitle,
+                fullTitle,
+                year,
+                image,
+                releaseDate,
+                runtimeStr,
+                plot,
+                awards,
+                companies,
+                countries,
+                languages,
+                imDbRating,
+                boxOffice
+            });
+
+            if (success) {
+                res.status(201).json({ message: 'Movie added successfully.' });
+            } else {
+                res.status(500).json({ message: 'Failed to add the movie.' });
+            }
+        } catch (error) {
+            console.error('Error in AddMovie controller:', error);
+            next(error);
+        }
+    },
     TopRatingMV: async (req, res, next) => {
         try {
             const topRating = await Movies.getTopRating(req.params.n);
